@@ -88,6 +88,22 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
     });
   }, []);
   
+  if (!data || data.length === 0) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center">
+            <MapPin className="h-5 w-5 mr-2" />
+            <span>Monitoring Stations</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6 flex items-center justify-center h-[400px]">
+          <div className="text-center text-gray-500">No location data available</div>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
