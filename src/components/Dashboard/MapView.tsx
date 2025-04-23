@@ -4,9 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
 import { AirQualityData } from '@/types/air-quality';
 import { getAQIColor } from '@/utils/helpers';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
 type MapViewProps = {
   data: AirQualityData[];
@@ -14,7 +14,7 @@ type MapViewProps = {
   onLocationSelect: (location: string) => void;
 };
 
-// Custom marker component
+// Custom marker icon function
 const createMarkerIcon = (level: string) => {
   let colorClass = '';
   
@@ -46,37 +46,10 @@ const createMarkerIcon = (level: string) => {
   });
 };
 
-// Component to automatically center the map when selected location changes
-const MapController = ({ 
-  data, 
-  selectedLocation 
-}: { 
-  data: AirQualityData[]; 
-  selectedLocation: string | null;
-}) => {
-  const map = useMap();
-  
-  useEffect(() => {
-    if (selectedLocation) {
-      const locationData = data.find(item => item.location === selectedLocation);
-      if (locationData) {
-        map.setView(locationData.coordinates, 13);
-      }
-    } else {
-      // If no location is selected, fit map to show all points
-      if (data.length > 0) {
-        const bounds = L.latLngBounds(data.map(item => item.coordinates));
-        map.fitBounds(bounds);
-      }
-    }
-  }, [selectedLocation, data, map]);
-  
-  return null;
-};
-
 const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => {
   const defaultCenter: [number, number] = [23.0225, 72.5714]; // Ahmedabad coordinates
   const [mapReady, setMapReady] = useState(false);
+  const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
   
   // Fix Leaflet marker icons
   useEffect(() => {
@@ -88,13 +61,32 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
       shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
     });
     
-    // Set map as ready after a short delay to ensure DOM is ready
+    // Set map as ready after a delay to ensure DOM is ready
     const timer = setTimeout(() => {
       setMapReady(true);
-    }, 100);
+    }, 300);
     
     return () => clearTimeout(timer);
   }, []);
+  
+  // Handle map initialization
+  const handleMapCreated = (map: L.Map) => {
+    setMapInstance(map);
+  };
+  
+  // Update map view when selected location changes
+  useEffect(() => {
+    if (mapInstance && selectedLocation) {
+      const locationData = data.find(item => item.location === selectedLocation);
+      if (locationData) {
+        mapInstance.setView(locationData.coordinates, 13);
+      }
+    } else if (mapInstance && data.length > 0) {
+      // If no location is selected, fit map to show all points
+      const bounds = L.latLngBounds(data.map(item => item.coordinates));
+      mapInstance.fitBounds(bounds);
+    }
+  }, [selectedLocation, data, mapInstance]);
   
   if (!data || data.length === 0) {
     return (
@@ -126,6 +118,7 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
             center={defaultCenter}
             zoom={11}
             style={{ height: '100%', width: '100%', borderRadius: '0 0 0.5rem 0.5rem' }}
+            whenCreated={handleMapCreated}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -162,8 +155,6 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
                 </Popup>
               </Marker>
             ))}
-            
-            <MapController data={data} selectedLocation={selectedLocation} />
           </MapContainer>
         )}
       </CardContent>
