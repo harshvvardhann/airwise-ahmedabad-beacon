@@ -126,7 +126,10 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
                   <p className="text-sm mt-1">AQI: <span className="font-bold">{item.aqi}</span></p>
                   <button
                     className="mt-2 text-xs text-primary hover:text-primary/80 underline"
-                    onClick={() => onLocationSelect(item.location)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onLocationSelect(item.location);
+                    }}
                   >
                     View Details
                   </button>
