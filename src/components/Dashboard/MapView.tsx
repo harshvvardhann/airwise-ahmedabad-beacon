@@ -56,7 +56,7 @@ const MapController = ({
 }) => {
   const map = useMap();
   
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedLocation) {
       const locationData = data.find(item => item.location === selectedLocation);
       if (locationData) {
