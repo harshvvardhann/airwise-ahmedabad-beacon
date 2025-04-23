@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
 import { AirQualityData } from '@/types/air-quality';
@@ -14,7 +13,6 @@ type MapViewProps = {
   onLocationSelect: (location: string) => void;
 };
 
-// Custom marker icon function
 const createMarkerIcon = (level: string) => {
   let colorClass = '';
   
@@ -49,11 +47,9 @@ const createMarkerIcon = (level: string) => {
 const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => {
   const defaultCenter: [number, number] = [23.0225, 72.5714]; // Ahmedabad coordinates
   const [mapReady, setMapReady] = useState(false);
-  const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
   
-  // Fix Leaflet marker icons
   useEffect(() => {
-    // This code fixes the missing marker icon issue
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
@@ -61,7 +57,6 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
       shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
     });
     
-    // Set map as ready after a delay to ensure DOM is ready
     const timer = setTimeout(() => {
       setMapReady(true);
     }, 300);
@@ -69,24 +64,18 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
     return () => clearTimeout(timer);
   }, []);
   
-  // Handle map initialization
-  const handleMapCreated = (map: L.Map) => {
-    setMapInstance(map);
-  };
-  
-  // Update map view when selected location changes
   useEffect(() => {
-    if (mapInstance && selectedLocation) {
+    const map = mapRef.current;
+    if (map && selectedLocation) {
       const locationData = data.find(item => item.location === selectedLocation);
       if (locationData) {
-        mapInstance.setView(locationData.coordinates, 13);
+        map.setView(locationData.coordinates, 13);
       }
-    } else if (mapInstance && data.length > 0) {
-      // If no location is selected, fit map to show all points
+    } else if (map && data.length > 0) {
       const bounds = L.latLngBounds(data.map(item => item.coordinates));
-      mapInstance.fitBounds(bounds);
+      map.fitBounds(bounds);
     }
-  }, [selectedLocation, data, mapInstance]);
+  }, [selectedLocation, data]);
   
   if (!data || data.length === 0) {
     return (
@@ -118,7 +107,7 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
             center={defaultCenter}
             zoom={11}
             style={{ height: '100%', width: '100%', borderRadius: '0 0 0.5rem 0.5rem' }}
-            whenCreated={handleMapCreated}
+            ref={mapRef}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
