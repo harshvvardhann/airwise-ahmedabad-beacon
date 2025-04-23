@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
 import { AirQualityData } from '@/types/air-quality';
@@ -76,6 +76,7 @@ const MapController = ({
 
 const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => {
   const defaultCenter: [number, number] = [23.0225, 72.5714]; // Ahmedabad coordinates
+  const [mapReady, setMapReady] = useState(false);
   
   // Fix Leaflet marker icons
   useEffect(() => {
@@ -86,6 +87,13 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
       iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
       shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
     });
+    
+    // Set map as ready after a short delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      setMapReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
   
   if (!data || data.length === 0) {
@@ -113,49 +121,51 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0 h-[400px]">
-        <MapContainer
-          center={defaultCenter}
-          zoom={11}
-          style={{ height: '100%', width: '100%', borderRadius: '0 0 0.5rem 0.5rem' }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          
-          {data.map((item) => (
-            <Marker 
-              key={item.location}
-              position={item.coordinates}
-              icon={createMarkerIcon(item.level)}
-              eventHandlers={{
-                click: () => onLocationSelect(item.location)
-              }}
-            >
-              <Popup>
-                <div className="p-2">
-                  <h3 className="font-bold">{item.location}</h3>
-                  <div className="flex items-center mt-1">
-                    <div className={`h-3 w-3 rounded-full ${getAQIColor(item.level)} mr-2`}></div>
-                    <span className="capitalize">{item.level}</span>
+        {mapReady && (
+          <MapContainer
+            center={defaultCenter}
+            zoom={11}
+            style={{ height: '100%', width: '100%', borderRadius: '0 0 0.5rem 0.5rem' }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            
+            {data.map((item) => (
+              <Marker 
+                key={item.location}
+                position={item.coordinates}
+                icon={createMarkerIcon(item.level)}
+                eventHandlers={{
+                  click: () => onLocationSelect(item.location)
+                }}
+              >
+                <Popup>
+                  <div className="p-2">
+                    <h3 className="font-bold">{item.location}</h3>
+                    <div className="flex items-center mt-1">
+                      <div className={`h-3 w-3 rounded-full ${getAQIColor(item.level)} mr-2`}></div>
+                      <span className="capitalize">{item.level}</span>
+                    </div>
+                    <p className="text-sm mt-1">AQI: <span className="font-bold">{item.aqi}</span></p>
+                    <button
+                      className="mt-2 text-xs text-primary hover:text-primary/80 underline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onLocationSelect(item.location);
+                      }}
+                    >
+                      View Details
+                    </button>
                   </div>
-                  <p className="text-sm mt-1">AQI: <span className="font-bold">{item.aqi}</span></p>
-                  <button
-                    className="mt-2 text-xs text-primary hover:text-primary/80 underline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onLocationSelect(item.location);
-                    }}
-                  >
-                    View Details
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-          
-          <MapController data={data} selectedLocation={selectedLocation} />
-        </MapContainer>
+                </Popup>
+              </Marker>
+            ))}
+            
+            <MapController data={data} selectedLocation={selectedLocation} />
+          </MapContainer>
+        )}
       </CardContent>
     </Card>
   );
