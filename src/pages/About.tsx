@@ -91,7 +91,7 @@ const About = () => {
                 <div className="p-4 rounded-lg bg-aqi-severe bg-opacity-10 border border-aqi-severe">
                   <div className="flex items-center mb-2">
                     <div className="h-4 w-4 rounded-full bg-aqi-severe mr-2"></div>
-                    <h3 className="font-bold">Very Unhealthy (201-300) & Hazardous (>300)</h3>
+                    <h3 className="font-bold">Very Unhealthy (201-300) &amp; Hazardous ({'>'}300)</h3>
                   </div>
                   <p className="text-sm">Health alert: everyone may experience more serious health effects. Emergency conditions may be triggered.</p>
                 </div>
