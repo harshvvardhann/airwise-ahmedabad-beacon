@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, AlertTriangle, ChartLine, Info } from 'lucide-react';
+import { Home, AlertTriangle, ChartLine, Info, BarChart2 } from 'lucide-react';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 
 const Navbar = () => {
@@ -33,6 +33,13 @@ const Navbar = () => {
                 <Link to="/predictions" className="flex items-center px-4 py-2 text-sm hover:text-primary">
                   <ChartLine className="h-4 w-4 mr-2" />
                   Predictions
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link to="/emissions" className="flex items-center px-4 py-2 text-sm hover:text-primary">
+                  <BarChart2 className="h-4 w-4 mr-2" />
+                  Carbon Emissions
                 </Link>
               </NavigationMenuItem>
               

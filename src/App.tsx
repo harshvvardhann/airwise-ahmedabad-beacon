@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Alerts from "./pages/Alerts";
 import Predictions from "./pages/Predictions";
+import Emissions from "./pages/Emissions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/predictions" element={<Predictions />} />
+          <Route path="/emissions" element={<Emissions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

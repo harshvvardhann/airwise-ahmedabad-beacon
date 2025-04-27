@@ -1,4 +1,3 @@
-
 import { AirQualityData, AirQualityHistorical, LocationData, Pollutant } from "@/types/air-quality";
 
 // OpenAQ API base URL
@@ -52,6 +51,34 @@ export async function fetchLocations(): Promise<LocationData[]> {
   } catch (error) {
     console.error("Error fetching locations:", error);
     throw new Error("Failed to fetch location data");
+  }
+}
+
+// Function to fetch carbon emissions data
+export async function fetchCarbonEmissionsData(): Promise<any> {
+  try {
+    // Simulate API call with delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Return mock carbon emissions data
+    return getMockCarbonEmissionsData();
+  } catch (error) {
+    console.error("Error fetching carbon emissions data:", error);
+    throw new Error("Failed to fetch carbon emissions data");
+  }
+}
+
+// Function to fetch carbon reduction strategies
+export async function fetchCarbonReductionStrategies(): Promise<any> {
+  try {
+    // Simulate API call with delay
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    // Return mock carbon reduction strategies
+    return getMockCarbonReductionStrategies();
+  } catch (error) {
+    console.error("Error fetching carbon reduction strategies:", error);
+    throw new Error("Failed to fetch carbon reduction strategies");
   }
 }
 
@@ -163,4 +190,83 @@ function getMockHistoricalData(): AirQualityHistorical[] {
   }
   
   return data;
+}
+
+// Mock data for carbon emissions
+function getMockCarbonEmissionsData() {
+  return {
+    totalEmissions: {
+      current: 970,
+      previous: 905,
+      change: 7.3
+    },
+    byScope: {
+      scope1: 170,
+      scope2: 280,
+      scope3: 520
+    },
+    monthlyData: [
+      { month: 'Jan', scope1: 120, scope2: 240, scope3: 450, total: 810 },
+      { month: 'Feb', scope1: 110, scope2: 220, scope3: 430, total: 760 },
+      { month: 'Mar', scope1: 140, scope2: 250, scope3: 470, total: 860 },
+      { month: 'Apr', scope1: 130, scope2: 230, scope3: 440, total: 800 },
+      { month: 'May', scope1: 150, scope2: 260, scope3: 490, total: 900 },
+      { month: 'Jun', scope1: 170, scope2: 280, scope3: 520, total: 970 }
+    ],
+    forecast: [
+      { month: 'Jul', predicted: 950, target: 900 },
+      { month: 'Aug', predicted: 930, target: 880 },
+      { month: 'Sep', predicted: 910, target: 860 },
+      { month: 'Oct', predicted: 890, target: 840 },
+      { month: 'Nov', predicted: 870, target: 820 },
+      { month: 'Dec', predicted: 850, target: 800 }
+    ]
+  };
+}
+
+// Mock data for carbon reduction strategies
+function getMockCarbonReductionStrategies() {
+  return {
+    recommendations: {
+      scope1And2: [
+        "Switch to renewable energy sources for office operations",
+        "Upgrade to energy-efficient equipment and lighting",
+        "Transition company vehicles to electric or hybrid models",
+        "Install smart building management systems"
+      ],
+      scope3: [
+        "Implement a sustainable procurement policy",
+        "Engage suppliers on their carbon reduction efforts",
+        "Reduce business travel and promote virtual meetings",
+        "Optimize logistics and transportation routes"
+      ]
+    },
+    roadmap: {
+      shortTerm: {
+        timeframe: "0-6 months",
+        targetReduction: "5-10%"
+      },
+      mediumTerm: {
+        timeframe: "6-18 months",
+        targetReduction: "15-25%"
+      },
+      longTerm: {
+        timeframe: "18-36 months",
+        targetReduction: "30-45%"
+      }
+    },
+    carbonIntensity: {
+      electricity: 0.41, // per kWh
+      naturalGas: 0.18, // per kWh
+      petrol: 2.31, // per liter
+      diesel: 2.68, // per liter
+      flight: 0.25, // per km (economy)
+      beef: 27, // per kg
+      lamb: 39, // per kg
+      cheese: 13.5, // per kg
+      milk: 1.9, // per liter
+      vegetables: 2, // per kg
+      fruit: 1.1, // per kg
+    }
+  };
 }
