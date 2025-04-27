@@ -1,4 +1,3 @@
-
 const axios = require('axios');
 const { City, Location, Pollutant, Measurement } = require('../models');
 const { publishAirQualityData } = require('./kafka');
@@ -6,8 +5,22 @@ const { publishAirQualityData } = require('./kafka');
 // OpenAQ API base URL
 const OPENAQ_API = 'https://api.openaq.org/v2';
 
+// Redis cache keys
+const CACHE_KEYS = {
+  LATEST_AQI: 'latest:aqi',
+  LOCATION_DATA: 'location:data:',
+  ALL_LOCATIONS: 'all:locations',
+};
+
+// Cache TTL in seconds
+const CACHE_TTL = {
+  LATEST_AQI: 300, // 5 minutes
+  LOCATION_DATA: 600, // 10 minutes
+  ALL_LOCATIONS: 1800, // 30 minutes
+};
+
 // Function to fetch air quality data from OpenAQ API
-exports.fetchAirQualityData = async () => {
+exports.fetchAirQualityData = async (req, res) => {
   try {
     console.log('Fetching air quality data for Ahmedabad...');
     
@@ -37,7 +50,7 @@ exports.fetchAirQualityData = async () => {
     console.log(`Fetched ${results.length} measurements from OpenAQ`);
     
     // Process each result
-    const savedCount = await processResults(results, ahmedabad.id);
+    const savedCount = await processResults(results, ahmedabad.id, req?.app?.locals?.redisClient);
     
     return { count: savedCount };
   } catch (error) {
@@ -47,7 +60,7 @@ exports.fetchAirQualityData = async () => {
 };
 
 // Process the results and save to database
-async function processResults(results, cityId) {
+async function processResults(results, cityId, redisClient = null) {
   let savedCount = 0;
   let locationMeasurements = {};
   
@@ -137,6 +150,36 @@ async function processResults(results, cityId) {
   
   console.log(`Saved ${savedCount} new measurements to database`);
   
+  // Cache data in Redis if available
+  if (redisClient) {
+    try {
+      // Cache all the latest location data
+      const allLocations = Object.values(locationMeasurements);
+      
+      // Store each location data individually
+      for (const locationData of allLocations) {
+        const locationCacheKey = `${CACHE_KEYS.LOCATION_DATA}${locationData.location}`;
+        await redisClient.setex(
+          locationCacheKey,
+          CACHE_TTL.LOCATION_DATA,
+          JSON.stringify(locationData)
+        );
+      }
+      
+      // Store all locations array
+      await redisClient.setex(
+        CACHE_KEYS.ALL_LOCATIONS,
+        CACHE_TTL.ALL_LOCATIONS,
+        JSON.stringify(allLocations)
+      );
+      
+      console.log('Successfully cached air quality data in Redis');
+    } catch (redisError) {
+      console.error('Error caching data in Redis:', redisError);
+      // Non-blocking - continue even if Redis caching fails
+    }
+  }
+  
   // Publish aggregated data to Kafka
   for (const locationName in locationMeasurements) {
     try {
@@ -165,11 +208,8 @@ function getFullName(parameter) {
   return map[parameter.toLowerCase()] || parameter;
 }
 
-// Simple AQI calculation (this is a simplified version - real AQI calculation is more complex)
+// Simple AQI calculation
 function calculateAQI(pollutant, value) {
-  // This is a very simplified AQI calculation
-  // In a real-world application, you would use standard EPA or WHO formulas
-  
   let aqi, level;
   
   switch(pollutant) {
@@ -196,7 +236,6 @@ function calculateAQI(pollutant, value) {
     // Add similar logic for other pollutants
     
     default:
-      // Default simple calculation for other pollutants
       if (value <= 50) { aqi = value; level = 'good'; }
       else if (value <= 100) { aqi = value; level = 'moderate'; }
       else if (value <= 150) { aqi = value; level = 'unhealthy'; }
