@@ -1,6 +1,7 @@
 
 const axios = require('axios');
 const { City, Location, Pollutant, Measurement } = require('../models');
+const { publishAirQualityData } = require('./kafka');
 
 // OpenAQ API base URL
 const OPENAQ_API = 'https://api.openaq.org/v2';
@@ -48,6 +49,7 @@ exports.fetchAirQualityData = async () => {
 // Process the results and save to database
 async function processResults(results, cityId) {
   let savedCount = 0;
+  let locationMeasurements = {};
   
   for (const result of results) {
     try {
@@ -84,7 +86,7 @@ async function processResults(results, cityId) {
       // Calculate AQI and level (simplified version)
       const { aqi, level } = calculateAQI(result.parameter.toLowerCase(), result.value);
       
-      // Create measurement (using findOrCreate to avoid duplicates)
+      // Create measurement
       const [measurement, created] = await Measurement.findOrCreate({
         where: {
           locationId: location.id,
@@ -106,12 +108,45 @@ async function processResults(results, cityId) {
       if (created) {
         savedCount++;
       }
+      
+      // Aggregate measurements by location for Kafka
+      if (!locationMeasurements[location.name]) {
+        locationMeasurements[location.name] = {
+          location: location.name,
+          city: 'Ahmedabad',
+          coordinates: [location.latitude, location.longitude],
+          timestamp: new Date(result.date.utc).toISOString(),
+          measurements: {},
+          aqi: 0,
+          level: 'good'
+        };
+      }
+      
+      locationMeasurements[location.name].measurements[pollutant.name] = result.value;
+      
+      // Update AQI if higher
+      if (aqi > locationMeasurements[location.name].aqi) {
+        locationMeasurements[location.name].aqi = aqi;
+        locationMeasurements[location.name].level = level;
+      }
+      
     } catch (error) {
       console.error(`Error processing measurement for ${result.location}:`, error);
     }
   }
   
   console.log(`Saved ${savedCount} new measurements to database`);
+  
+  // Publish aggregated data to Kafka
+  for (const locationName in locationMeasurements) {
+    try {
+      await publishAirQualityData(locationMeasurements[locationName]);
+      console.log(`Published data to Kafka for ${locationName}`);
+    } catch (error) {
+      console.error(`Error publishing data to Kafka for ${locationName}:`, error);
+    }
+  }
+  
   return savedCount;
 }
 

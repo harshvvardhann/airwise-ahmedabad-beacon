@@ -1,0 +1,33 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airwise-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: airwise-frontend
+  template:
+    metadata:
+      labels:
+        app: airwise-frontend
+    spec:
+      containers:
+      - name: airwise-frontend
+        image: airwise-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airwise-frontend
+spec:
+  selector:
+    app: airwise-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer

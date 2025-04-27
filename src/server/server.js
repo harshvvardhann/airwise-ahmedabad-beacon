@@ -7,6 +7,7 @@ const cron = require('node-cron');
 const { sequelize } = require('./models');
 const routes = require('./routes');
 const { fetchAirQualityData } = require('./services/openaq');
+const { initKafka } = require('./services/kafka');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,6 +43,9 @@ async function startServer() {
   try {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
+    
+    // Initialize Kafka
+    await initKafka();
     
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

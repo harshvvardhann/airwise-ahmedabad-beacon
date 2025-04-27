@@ -162,10 +162,14 @@ const MapView = ({ data, selectedLocation, onLocationSelect }: MapViewProps) => 
         
         // Find and open popup for the selected location
         markersRef.current.forEach(marker => {
-          // @ts-ignore - accessing private property
-          const popupContent = marker.getPopup()?.getContent();
-          if (popupContent && popupContent.textContent?.includes(selectedLocation)) {
-            marker.openPopup();
+          const popup = marker.getPopup();
+          if (popup) {
+            const content = popup.getContent();
+            if (typeof content === 'string' && content.includes(selectedLocation)) {
+              marker.openPopup();
+            } else if (content instanceof HTMLElement && content.innerHTML.includes(selectedLocation)) {
+              marker.openPopup();
+            }
           }
         });
       }
