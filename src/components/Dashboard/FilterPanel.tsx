@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Filter, MapPin, ChevronDown } from 'lucide-react';
+import { Filter, MapPin } from 'lucide-react';
 import { Pollutant } from '@/types/air-quality';
 import { pollutantInfo } from '@/utils/helpers';
 import { LocationData } from '@/types/air-quality';
@@ -24,9 +24,9 @@ const FilterPanel = ({
 }: FilterPanelProps) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-4 md:mt-0">
-      <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm border-border/70 hover:shadow-md transition-shadow duration-300 bg-card/90">
         <CardContent className="p-3">
-          <div className="text-xs text-gray-500 mb-1 flex items-center font-medium">
+          <div className="text-xs text-foreground/60 mb-1 flex items-center font-medium">
             <MapPin className="h-3 w-3 mr-1 text-primary" />
             <span>Location</span>
           </div>
@@ -34,10 +34,10 @@ const FilterPanel = ({
             value={selectedLocation || 'all'}
             onValueChange={onLocationChange}
           >
-            <SelectTrigger className="w-full sm:w-[200px] h-9 bg-white border border-gray-200">
+            <SelectTrigger className="w-full sm:w-[200px] h-9 bg-card border border-border/50">
               <SelectValue placeholder="Select Location" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-card border border-border/50">
               <SelectItem value="all" className="font-medium">All Locations</SelectItem>
               {locationsData?.map(location => (
                 <SelectItem key={location.id} value={location.name}>
@@ -49,9 +49,9 @@ const FilterPanel = ({
         </CardContent>
       </Card>
       
-      <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow duration-300">
+      <Card className="shadow-sm border-border/70 hover:shadow-md transition-shadow duration-300 bg-card/90">
         <CardContent className="p-3">
-          <div className="text-xs text-gray-500 mb-1 flex items-center font-medium">
+          <div className="text-xs text-foreground/60 mb-1 flex items-center font-medium">
             <Filter className="h-3 w-3 mr-1 text-primary" />
             <span>Pollutant</span>
           </div>
@@ -59,10 +59,10 @@ const FilterPanel = ({
             value={selectedPollutant || 'all'}
             onValueChange={onPollutantChange}
           >
-            <SelectTrigger className="w-full sm:w-[200px] h-9 bg-white border border-gray-200">
+            <SelectTrigger className="w-full sm:w-[200px] h-9 bg-card border border-border/50">
               <SelectValue placeholder="Select Pollutant" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-card border border-border/50">
               <SelectItem value="all" className="font-medium">All Pollutants</SelectItem>
               {Object.entries(pollutantInfo).map(([key, info]) => (
                 <SelectItem key={key} value={key}>

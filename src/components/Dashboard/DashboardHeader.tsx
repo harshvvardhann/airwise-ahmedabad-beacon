@@ -9,8 +9,8 @@ type DashboardHeaderProps = {
 const DashboardHeader = ({ title, subtitle }: DashboardHeaderProps) => {
   return (
     <div className="space-y-1">
-      <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{title}</h1>
-      <p className="text-gray-600 text-lg">{subtitle}</p>
+      <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{title}</h1>
+      <p className="text-foreground/80 text-lg font-light">{subtitle}</p>
     </div>
   );
 };

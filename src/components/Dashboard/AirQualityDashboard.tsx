@@ -42,9 +42,9 @@ const AirQualityDashboard = ({
     : airQualityData?.[0];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-background">
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div className="glass-card rounded-xl shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <DashboardHeader 
               title="Air Quality Dashboard" 
@@ -77,7 +77,7 @@ const AirQualityDashboard = ({
               onLocationSelect={handleLocationChange}
             />
             
-            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+            <div className="glass-card rounded-xl shadow-md p-6 mb-6">
               <DataTable data={airQualityData} />
             </div>
           </>

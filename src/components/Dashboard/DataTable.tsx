@@ -28,27 +28,27 @@ const DataTable = ({ data }: DataTableProps) => {
             <span>Air Quality Data</span>
           </CardTitle>
           <div className="w-full sm:w-1/3 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-foreground/40" />
             <Input
               placeholder="Search location..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-10 text-sm pl-10 pr-4 border-gray-200 focus:border-primary"
+              className="h-10 text-sm pl-10 pr-4 border-border/40 bg-card/50 focus-visible:ring-primary"
             />
           </div>
         </div>
       </CardHeader>
       <CardContent className="px-0">
-        <div className="overflow-x-auto rounded-lg border border-gray-100 shadow-sm">
+        <div className="overflow-x-auto rounded-lg border border-border/30 shadow-sm">
           <Table>
-            <TableHeader className="bg-gray-50">
+            <TableHeader className="bg-card/50">
               <TableRow>
                 <TableHead className="font-medium">Location</TableHead>
                 <TableHead className="font-medium text-center">AQI</TableHead>
                 {Object.keys(pollutantInfo).map((key) => (
                   <TableHead key={key} className="font-medium text-center">
                     {pollutantInfo[key as Pollutant].name}
-                    <span className="text-xs text-gray-500 block">
+                    <span className="text-xs text-foreground/50 block">
                       {pollutantInfo[key as Pollutant].unit}
                     </span>
                   </TableHead>
@@ -59,7 +59,7 @@ const DataTable = ({ data }: DataTableProps) => {
             <TableBody>
               {filteredData.length > 0 ? (
                 filteredData.map((row) => (
-                  <TableRow key={row.location} className="hover:bg-gray-50">
+                  <TableRow key={row.location} className="hover:bg-card/70 transition-colors duration-200">
                     <TableCell className="font-medium">{row.location}</TableCell>
                     <TableCell className="text-center">
                       <span 
@@ -76,19 +76,19 @@ const DataTable = ({ data }: DataTableProps) => {
                       <TableCell key={key} className="text-center">
                         {row.measurements[key as Pollutant] !== null
                           ? row.measurements[key as Pollutant]
-                          : <span className="text-gray-400">--</span>}
+                          : <span className="text-foreground/30">--</span>}
                       </TableCell>
                     ))}
-                    <TableCell className="text-xs text-gray-500">
+                    <TableCell className="text-xs text-foreground/50">
                       {formatDate(row.timestamp)}
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={8} className="text-center py-8 text-foreground/50">
                     <div className="flex flex-col items-center">
-                      <Search className="h-8 w-8 text-gray-300 mb-2" />
+                      <Search className="h-8 w-8 text-foreground/30 mb-2" />
                       <span>No matching locations found</span>
                     </div>
                   </TableCell>

@@ -33,13 +33,13 @@ const TrendChart = ({ data, selectedPollutant }: TrendChartProps) => {
     : ['pm25', 'pm10', 'no2', 'o3'];
   
   return (
-    <Card className="h-full">
+    <Card className="h-full border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 card-hover">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center">
-          <LineChartIcon className="h-5 w-5 mr-2" />
+          <LineChartIcon className="h-5 w-5 mr-2 text-primary" />
           <span>Pollutant Trends</span>
           {selectedPollutant && (
-            <span className="ml-2 text-base font-normal text-muted-foreground">
+            <span className="ml-2 text-base font-normal text-foreground/70">
               - {pollutantInfo[selectedPollutant].name}
             </span>
           )}
@@ -47,17 +47,35 @@ const TrendChart = ({ data, selectedPollutant }: TrendChartProps) => {
       </CardHeader>
       <CardContent className="h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-            <XAxis dataKey="date" />
-            <YAxis />
+          <LineChart 
+            data={chartData} 
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+            <XAxis 
+              dataKey="date" 
+              stroke="rgba(255,255,255,0.5)"
+              tick={{ fill: "rgba(255,255,255,0.7)" }}
+            />
+            <YAxis 
+              stroke="rgba(255,255,255,0.5)"
+              tick={{ fill: "rgba(255,255,255,0.7)" }}
+            />
             <Tooltip 
               formatter={(value, name) => {
                 const pollutant = name as Pollutant;
                 return [`${value} ${pollutantInfo[pollutant]?.unit || ''}`, pollutantInfo[pollutant]?.name || name];
               }}
+              contentStyle={{ 
+                backgroundColor: "rgba(30, 41, 59, 0.9)", 
+                borderColor: "rgba(255,255,255,0.1)",
+                borderRadius: "0.5rem",
+                color: "rgba(255,255,255,0.9)"
+              }}
             />
-            <Legend />
+            <Legend 
+              wrapperStyle={{ color: "rgba(255,255,255,0.7)" }} 
+            />
             {pollutantsToShow.map(pollutant => (
               <Line
                 key={pollutant}
