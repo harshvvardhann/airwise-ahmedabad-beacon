@@ -60,16 +60,17 @@ const PollutantCard = ({ pollutant, value }: PollutantCardProps) => {
   };
   
   return (
-    <Card className="animate-fade-in border hover:border-primary/20 transition-all duration-300">
-      <CardHeader className="pb-2">
+    <Card className="animate-fade-in border transition-all duration-300 hover:shadow-md overflow-hidden group">
+      <div className="h-1" style={{ backgroundColor: info.color }}></div>
+      <CardHeader className="pb-2 pt-3 px-4">
         <CardTitle className="text-lg flex items-center justify-between">
           <span>{info.name}</span>
           <span className="text-xs font-normal text-gray-500 ml-2">{info.unit}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 pb-4 pt-0">
         <div className="flex flex-col items-center">
-          <div className={`text-3xl font-bold ${getColorClass()}`}>
+          <div className={`text-3xl font-bold ${getColorClass()} transition-colors duration-300 group-hover:scale-110`}>
             {value === null ? 'N/A' : value}
           </div>
           <p className="mt-1 text-xs text-gray-500 text-center">{info.fullName}</p>

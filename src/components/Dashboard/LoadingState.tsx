@@ -3,11 +3,16 @@ import React from 'react';
 
 const LoadingState = () => {
   return (
-    <div className="flex justify-center items-center py-16">
-      <div className="animate-pulse flex flex-col items-center">
-        <div className="h-12 w-12 rounded-full bg-primary/20 mb-4"></div>
-        <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
-        <div className="h-3 w-24 bg-gray-100 rounded"></div>
+    <div className="flex justify-center items-center py-16 px-4">
+      <div className="animate-pulse flex flex-col items-center bg-white p-8 rounded-xl shadow-lg">
+        <div className="h-14 w-14 rounded-full bg-primary/20 mb-6 animate-spin"></div>
+        <div className="h-6 w-64 bg-gray-200 rounded-md mb-3"></div>
+        <div className="h-4 w-48 bg-gray-100 rounded-md"></div>
+        <div className="mt-6 grid grid-cols-3 gap-4 w-full">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-24 bg-gray-100 rounded-lg"></div>
+          ))}
+        </div>
       </div>
     </div>
   );

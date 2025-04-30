@@ -44,19 +44,21 @@ const AirQualityDashboard = ({
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <DashboardHeader 
-            title="Air Quality Dashboard" 
-            subtitle="Real-time air quality monitoring for Ahmedabad" 
-          />
-          
-          <FilterPanel 
-            selectedLocation={selectedLocation} 
-            selectedPollutant={selectedPollutant}
-            locationsData={locationsData}
-            onLocationChange={handleLocationChange}
-            onPollutantChange={handlePollutantChange}
-          />
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <DashboardHeader 
+              title="Air Quality Dashboard" 
+              subtitle="Real-time air quality monitoring for Ahmedabad" 
+            />
+            
+            <FilterPanel 
+              selectedLocation={selectedLocation} 
+              selectedPollutant={selectedPollutant}
+              locationsData={locationsData}
+              onLocationChange={handleLocationChange}
+              onPollutantChange={handlePollutantChange}
+            />
+          </div>
         </div>
         
         {/* Loading state */}
@@ -75,7 +77,7 @@ const AirQualityDashboard = ({
               onLocationSelect={handleLocationChange}
             />
             
-            <div className="mb-6">
+            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
               <DataTable data={airQualityData} />
             </div>
           </>
