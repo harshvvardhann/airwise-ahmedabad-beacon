@@ -1,8 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Navbar from '@/components/Layout/Navbar';
-import Footer from '@/components/Layout/Footer';
 import { Pollutant } from '@/types/air-quality';
 import { fetchCurrentAirQuality, fetchHistoricalData, fetchLocations } from '@/utils/api';
 import { useToast } from '@/hooks/use-toast';
@@ -64,24 +62,18 @@ const Index = () => {
   };
 
   return (
-    <>
-      <Navbar />
-      
-      <AirQualityDashboard
-        airQualityData={airQualityData}
-        historicalData={historicalData}
-        locationsData={locationsData}
-        selectedLocation={selectedLocation}
-        selectedPollutant={selectedPollutant}
-        isLoadingAirQuality={isLoadingAirQuality}
-        airQualityError={airQualityError}
-        refetchAirQuality={refetchAirQuality}
-        handleLocationChange={handleLocationChange}
-        handlePollutantChange={handlePollutantChange}
-      />
-      
-      <Footer />
-    </>
+    <AirQualityDashboard
+      airQualityData={airQualityData}
+      historicalData={historicalData}
+      locationsData={locationsData}
+      selectedLocation={selectedLocation}
+      selectedPollutant={selectedPollutant}
+      isLoadingAirQuality={isLoadingAirQuality}
+      airQualityError={airQualityError}
+      refetchAirQuality={refetchAirQuality}
+      handleLocationChange={handleLocationChange}
+      handlePollutantChange={handlePollutantChange}
+    />
   );
 };
 

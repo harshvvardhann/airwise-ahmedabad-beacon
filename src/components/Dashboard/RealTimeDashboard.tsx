@@ -6,8 +6,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import PollutionChart from './PollutionChart';
 import MLPredictionsCard from './MLPredictionsCard';
 import EmissionMetricsGrid from './EmissionMetricsGrid';
-
-type CityFilter = 'ahmedabad' | 'mumbai' | 'delhi' | 'bengaluru';
+import CitySelector, { City } from '@/components/Common/CitySelector';
+import LastUpdated from '@/components/Common/LastUpdated';
 
 interface RealTimeData {
   aqi: number;
@@ -19,12 +19,13 @@ interface RealTimeData {
 }
 
 const RealTimeDashboard = () => {
-  const [selectedCity, setSelectedCity] = useState<CityFilter>('ahmedabad');
+  const [selectedCity, setSelectedCity] = useState<City>('ahmedabad');
   const [realTimeData, setRealTimeData] = useState<RealTimeData | null>(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   // Static data for different cities
-  const cityData: Record<CityFilter, RealTimeData> = {
+  const cityData: Record<City, RealTimeData> = {
     ahmedabad: {
       aqi: 156,
       co2: 4.8,
@@ -56,18 +57,45 @@ const RealTimeDashboard = () => {
       humidity: 65,
       forecastedEmission: 4.1,
       timestamp: new Date().toISOString()
+    },
+    chennai: {
+      aqi: 134,
+      co2: 4.6,
+      temperature: 31,
+      humidity: 73,
+      forecastedEmission: 4.9,
+      timestamp: new Date().toISOString()
+    },
+    kolkata: {
+      aqi: 167,
+      co2: 5.3,
+      temperature: 29,
+      humidity: 78,
+      forecastedEmission: 5.6,
+      timestamp: new Date().toISOString()
     }
   };
 
-  useEffect(() => {
-    // Simulate real-time data updates
-    const fetchRealTimeData = () => {
-      setRealTimeData(cityData[selectedCity]);
-      setShowAlert(cityData[selectedCity].co2 > 5.0);
+  const fetchRealTimeData = () => {
+    // Simulate API call with slight variations
+    const baseData = cityData[selectedCity];
+    const updatedData = {
+      ...baseData,
+      aqi: baseData.aqi + Math.floor(Math.random() * 10) - 5,
+      co2: baseData.co2 + (Math.random() * 0.4) - 0.2,
+      temperature: baseData.temperature + Math.floor(Math.random() * 4) - 2,
+      humidity: baseData.humidity + Math.floor(Math.random() * 6) - 3,
+      timestamp: new Date().toISOString()
     };
+    
+    setRealTimeData(updatedData);
+    setShowAlert(updatedData.co2 > 5.0);
+    setLastUpdate(new Date());
+  };
 
+  useEffect(() => {
     fetchRealTimeData();
-    const interval = setInterval(fetchRealTimeData, 30000); // Update every 30 seconds
+    const interval = setInterval(fetchRealTimeData, 300000); // Update every 5 minutes
 
     return () => clearInterval(interval);
   }, [selectedCity]);
@@ -86,40 +114,36 @@ const RealTimeDashboard = () => {
     return 'Unhealthy';
   };
 
-  const cities = [
-    { value: 'ahmedabad', label: 'Ahmedabad' },
-    { value: 'mumbai', label: 'Mumbai' },
-    { value: 'delhi', label: 'Delhi' },
-    { value: 'bengaluru', label: 'Bengaluru' }
-  ];
-
   if (!realTimeData) return null;
 
   return (
     <div className="space-y-6">
+      {/* Header with City Selector and Last Updated */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold text-foreground">Real-Time Monitor</h2>
+          <CitySelector 
+            selectedCity={selectedCity}
+            onCityChange={setSelectedCity}
+          />
+        </div>
+        <LastUpdated 
+          lastUpdate={lastUpdate}
+          onRefresh={fetchRealTimeData}
+          autoRefresh={true}
+          refreshInterval={300000} // 5 minutes
+        />
+      </div>
+
       {/* Alert Banner */}
       {showAlert && (
         <Alert className="border-red-500/50 bg-red-950/20 animate-fade-in">
           <AlertTriangle className="h-5 w-5 text-red-400" />
           <AlertDescription className="text-red-300 font-medium">
-            Warning: High CO₂ level detected! Current emission: {realTimeData.co2} tons
+            Warning: High CO₂ level detected! Current emission: {realTimeData.co2.toFixed(1)} tons
           </AlertDescription>
         </Alert>
       )}
-
-      {/* City Filter */}
-      <div className="flex items-center gap-4 mb-6">
-        <h2 className="text-xl font-semibold text-foreground">City Filter:</h2>
-        <select
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value as CityFilter)}
-          className="px-4 py-2 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
-        >
-          {cities.map(city => (
-            <option key={city.value} value={city.value}>{city.label}</option>
-          ))}
-        </select>
-      </div>
 
       {/* Real-Time Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -156,7 +180,7 @@ const RealTimeDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-3xl font-bold text-primary">
-                  {realTimeData.co2}
+                  {realTimeData.co2.toFixed(1)}
                 </div>
                 <p className="text-sm text-muted-foreground">tons</p>
               </div>
