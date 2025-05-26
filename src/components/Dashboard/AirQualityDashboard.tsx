@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AirQualityData, AirQualityHistorical, Pollutant } from '@/types/air-quality';
 import DashboardHeader from './DashboardHeader';
 import FilterPanel from './FilterPanel';
@@ -37,6 +37,14 @@ const AirQualityDashboard = ({
   handleLocationChange,
   handlePollutantChange,
 }: AirQualityDashboardProps) => {
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
+
+  const handleApplyFilters = async () => {
+    setIsFilterLoading(true);
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsFilterLoading(false);
+  };
 
   // Get the currently selected location data
   const selectedLocationData = selectedLocation && airQualityData 
@@ -93,6 +101,8 @@ const AirQualityDashboard = ({
                   locationsData={locationsData}
                   onLocationChange={handleLocationChange}
                   onPollutantChange={handlePollutantChange}
+                  isLoading={isFilterLoading}
+                  onApplyFilters={handleApplyFilters}
                 />
               </div>
 

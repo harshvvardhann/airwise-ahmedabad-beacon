@@ -33,7 +33,7 @@ const App = () => (
             </MainLayout>
           } />
           <Route path="/about" element={
-            <MainLayout showNavbar={false}>
+            <MainLayout showFooter={false}>
               <About />
             </MainLayout>
           } />
@@ -53,7 +53,7 @@ const App = () => (
             </MainLayout>
           } />
           <Route path="*" element={
-            <MainLayout showNavbar={false} showFooter={false}>
+            <MainLayout showFooter={false}>
               <NotFound />
             </MainLayout>
           } />
