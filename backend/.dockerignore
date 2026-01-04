@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+npm-debug.log
+package-lock.json
+
+# Development files
+.env.local
+.env.development
+.env.test
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+
+# Logs
+logs
+*.log
+
+# Testing
+coverage
+.nyc_output
+*.test.js
+*.spec.js
+
+# Misc
+.eslintcache
+
+
+
+
+
+

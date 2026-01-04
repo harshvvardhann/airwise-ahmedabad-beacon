@@ -1,0 +1,56 @@
+{
+    "development": {
+        "username": "airwise",
+        "password": "airwise_password",
+        "database": "airwise_db",
+        "host": "127.0.0.1",
+        "port": 3306,
+        "dialect": "mysql",
+        "logging": false,
+        "seederStorage": "sequelize",
+        "migrationStorageTableName": "SequelizeMeta",
+        "seederStorageTableName": "sequelizeData",
+        "pool": {
+            "max": 100,
+            "min": 0,
+            "acquire": 30000,
+            "idle": 10000
+        }
+    },
+    "test": {
+        "username": "root",
+        "password": "",
+        "database": "airwise_test",
+        "host": "127.0.0.1",
+        "port": 3306,
+        "dialect": "mysql",
+        "logging": false,
+        "seederStorage": "sequelize",
+        "migrationStorageTableName": "SequelizeMeta",
+        "seederStorageTableName": "sequelizeData",
+        "pool": {
+            "max": 100,
+            "min": 0,
+            "acquire": 30000,
+            "idle": 10000
+        }
+    },
+    "production": {
+        "username": "airwise",
+        "password": "airwise_password",
+        "database": "airwise_db",
+        "host": "db",
+        "port": 3306,
+        "dialect": "mysql",
+        "logging": false,
+        "seederStorage": "sequelize",
+        "migrationStorageTableName": "SequelizeMeta",
+        "seederStorageTableName": "sequelizeData",
+        "pool": {
+            "max": 100,
+            "min": 0,
+            "acquire": 30000,
+            "idle": 10000
+        }
+    }
+}

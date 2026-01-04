@@ -1,0 +1,15 @@
+# Core ML libraries
+scikit-learn==1.2.2
+numpy==1.24.3
+pandas==2.0.1
+joblib==1.3.2
+
+# Kafka integration
+kafka-python==2.0.2
+
+# Note: Removed unused heavy dependencies:
+# - tensorflow==2.12.0 (not used, saves ~500MB+ download)
+# - pyspark==3.4.1 (not used, saves ~200MB+ download)
+# - flask==2.3.3 (not used, no web server)
+# - requests==2.31.0 (not used)
+# - python-dotenv==1.0.0 (not used)

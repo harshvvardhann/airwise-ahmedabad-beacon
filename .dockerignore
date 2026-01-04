@@ -1,0 +1,65 @@
+# Dependencies
+node_modules
+npm-debug.log
+package-lock.json
+bun.lockb
+
+# Build outputs
+dist
+build
+.next
+out
+
+# Development files
+.env.local
+.env.development
+.env.test
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+SETUP_GUIDE.md
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs
+*.log
+
+# Testing
+coverage
+.nyc_output
+*.test.js
+*.spec.js
+
+# Misc
+.eslintcache
+.cache
+
+
+
+
+
+
